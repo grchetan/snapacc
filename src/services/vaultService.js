@@ -63,10 +63,20 @@ export async function deleteVaultItem(userId, itemId) {
  * Call this on every app open.
  */
 export async function pingHealth(userId) {
-  const today = new Date().toISOString().slice(0, 10); // "2026-09-05"
-  await setDoc(
-    doc(db, 'users', userId, 'health', today),
-    { ts: Date.now(), date: today },
-    { merge: true }
-  );
+  try {
+    const today = new Date().toISOString().slice(0, 10); // "2026-09-05"
+    const storageKey = `tv_health_ping_${userId}`;
+    if (localStorage.getItem(storageKey) === today) {
+      return; // Already recorded today, skip redundant write
+    }
+    await setDoc(
+      doc(db, 'users', userId, 'health', today),
+      { ts: Date.now(), date: today },
+      { merge: true }
+    );
+    localStorage.setItem(storageKey, today);
+  } catch (e) {
+    // Fail silently so health ping never interrupts normal user flow
+    console.debug('Health ping notice:', e);
+  }
 }
