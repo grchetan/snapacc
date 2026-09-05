@@ -272,15 +272,15 @@ export default function VaultCard({ item }) {
                   ⚠️ This card is currently <strong>FROZEN</strong>. If you delete it, your locked password will be <strong>permanently destroyed</strong>.
                 </div>
                 <div>
-                  <label className="block text-[11px] font-bold text-zinc-600 mb-1 uppercase tracking-wider">
-                    Type <strong>DELETE</strong> to confirm:
+                  <label className="block text-xs font-medium text-zinc-700 mb-1.5">
+                    To confirm, please type <span className="font-mono font-bold text-red-600 bg-red-100 px-1.5 py-0.5 rounded border border-red-200">"DELETE"</span> below:
                   </label>
                   <input
                     type="text"
                     value={deleteInput}
                     onChange={(e) => setDeleteInput(e.target.value)}
-                    placeholder="DELETE"
-                    className="w-full px-3 py-2 rounded-xl bg-zinc-50 border border-zinc-300 text-xs font-mono font-bold outline-none focus:border-red-500"
+                    placeholder='Type "DELETE" here...'
+                    className="w-full px-3 py-2 rounded-xl bg-zinc-50 border border-zinc-300 text-xs font-mono font-bold text-[#0A2558] outline-none focus:border-red-500 focus:bg-white transition-all"
                     autoFocus
                   />
                 </div>
