@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Snowflake, Unlock, Layers, AlertCircle, RefreshCw } from 'lucide-react';
+import { Plus, Snowflake, Unlock, Layers, AlertCircle, RefreshCw, Search } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import VaultCard from '../components/VaultCard';
 import SnowEffect from '../components/SnowEffect';
@@ -9,9 +9,11 @@ import { subscribeToVaultItems, pingHealth } from '../services/vaultService';
 
 export default function HomePage() {
   const { currentUser } = useAuth();
-  const [items, setItems]     = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [dbError, setDbError] = useState(null);
+  const [items, setItems]         = useState([]);
+  const [loading, setLoading]     = useState(true);
+  const [dbError, setDbError]     = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterTab, setFilterTab] = useState('all'); // 'all' | 'frozen' | 'thawed'
 
   useEffect(() => {
     if (!currentUser) return;
@@ -51,17 +53,30 @@ export default function HomePage() {
     };
   }, [currentUser]);
 
-  const locked   = items.filter(i => Date.now() < i.unlockTime);
-  const unlocked = items.filter(i => Date.now() >= i.unlockTime);
+  const locked   = useMemo(() => items.filter(i => Date.now() < i.unlockTime), [items]);
+  const unlocked = useMemo(() => items.filter(i => Date.now() >= i.unlockTime), [items]);
+
+  // Filtered list based on search and selected tab
+  const filteredItems = useMemo(() => {
+    let list = items;
+    if (filterTab === 'frozen') list = locked;
+    if (filterTab === 'thawed') list = unlocked;
+
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase().trim();
+      list = list.filter(i => i.label.toLowerCase().includes(q));
+    }
+    return list;
+  }, [items, locked, unlocked, filterTab, searchQuery]);
 
   return (
     <div className="min-h-screen bg-[#90CAF9] text-[#0A2558] flex flex-col relative overflow-hidden">
-      {/* Falling Snow Background (#90CAF9 Light Frost, No Blobs) */}
+      {/* Falling Snow Background */}
       <SnowEffect />
 
       {/* Main Content Layer */}
       <div className="relative z-10 flex flex-col flex-1">
-        <Navbar />
+        <Navbar vaultItems={items} />
 
         <main className="mx-auto max-w-5xl px-4 py-8 flex-1 w-full">
           {/* Error Banner */}
@@ -106,8 +121,8 @@ export default function HomePage() {
             </div>
           )}
 
-          {/* Action Header */}
-          <div className="flex items-center justify-between gap-4 mb-6">
+          {/* Action Header & New Lock CTA */}
+          <div className="flex items-center justify-between gap-4 mb-6 flex-wrap">
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="text-lg sm:text-xl font-extrabold tracking-tight text-[#0A2558]">
@@ -138,6 +153,44 @@ export default function HomePage() {
             </Link>
           </div>
 
+          {/* Search & Filter Controls (Shown when vaults exist) */}
+          {items.length > 0 && (
+            <div className="flex items-center justify-between gap-3 mb-6 flex-wrap bg-white/75 p-2 rounded-2xl border border-white/80 shadow-sm backdrop-blur-md">
+              {/* Filter Tabs */}
+              <div className="flex gap-1">
+                {[
+                  { key: 'all', label: `All (${items.length})` },
+                  { key: 'frozen', label: `Frozen (${locked.length})` },
+                  { key: 'thawed', label: `Thawed (${unlocked.length})` },
+                ].map((tab) => (
+                  <button
+                    key={tab.key}
+                    onClick={() => setFilterTab(tab.key)}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
+                      filterTab === tab.key
+                        ? 'bg-[#0D47A1] text-white shadow-sm'
+                        : 'text-[#1E4E8C] hover:text-[#0A2558] hover:bg-white/60'
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Search input */}
+              <div className="relative min-w-[200px] flex-1 sm:flex-initial">
+                <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[#1E4E8C]" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search account name..."
+                  className="w-full pl-8 pr-3 py-1.5 rounded-xl bg-white border border-blue-200 text-xs text-[#0A2558] placeholder:text-zinc-400 outline-none focus:border-[#1E88E5]"
+                />
+              </div>
+            </div>
+          )}
+
           {/* Skeleton Loading */}
           {loading && items.length === 0 && (
             <div className="grid gap-4 sm:grid-cols-2">
@@ -150,7 +203,7 @@ export default function HomePage() {
             </div>
           )}
 
-          {/* Empty State */}
+          {/* Empty State (No items in database) */}
           {!loading && !dbError && items.length === 0 && (
             <div className="text-center py-20 px-4 rounded-2xl border border-dashed border-white/80 bg-white/70 backdrop-blur-xl shadow-sm">
               <div className="w-14 h-14 rounded-2xl bg-white border border-[#90CAF9] flex items-center justify-center mx-auto mb-4 text-[#1E88E5] shadow-md shadow-blue-500/15">
@@ -172,34 +225,26 @@ export default function HomePage() {
             </div>
           )}
 
-          {/* Frozen Active Section */}
-          {!loading && locked.length > 0 && (
-            <section className="mb-8">
-              <div className="flex items-center gap-2 mb-3 text-xs font-bold uppercase tracking-wider text-[#0A2558]">
-                <Snowflake className="w-3.5 h-3.5 text-[#0D47A1]" />
-                <span>Deep Frozen ({locked.length})</span>
-              </div>
-              <div className="grid gap-4 sm:grid-cols-2">
-                {locked.map(item => (
-                  <VaultCard key={item.id} item={item} />
-                ))}
-              </div>
-            </section>
+          {/* No search matches */}
+          {!loading && items.length > 0 && filteredItems.length === 0 && (
+            <div className="text-center py-12 px-4 rounded-2xl bg-white/60 border border-white/80">
+              <p className="text-xs font-bold text-[#0A2558]">No cards match "{searchQuery}"</p>
+              <button
+                onClick={() => { setSearchQuery(''); setFilterTab('all'); }}
+                className="mt-2 text-xs font-semibold text-[#1E88E5] hover:underline"
+              >
+                Clear filter
+              </button>
+            </div>
           )}
 
-          {/* Thawed Unlocked Section */}
-          {!loading && unlocked.length > 0 && (
-            <section>
-              <div className="flex items-center gap-2 mb-3 text-xs font-bold uppercase tracking-wider text-emerald-800">
-                <Unlock className="w-3.5 h-3.5 text-emerald-700" />
-                <span>Thawed & Ready to Decrypt ({unlocked.length})</span>
-              </div>
-              <div className="grid gap-4 sm:grid-cols-2">
-                {unlocked.map(item => (
-                  <VaultCard key={item.id} item={item} />
-                ))}
-              </div>
-            </section>
+          {/* Vault Cards Display */}
+          {!loading && filteredItems.length > 0 && (
+            <div className="grid gap-4 sm:grid-cols-2">
+              {filteredItems.map(item => (
+                <VaultCard key={item.id} item={item} />
+              ))}
+            </div>
           )}
         </main>
       </div>
