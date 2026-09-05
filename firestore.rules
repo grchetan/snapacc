@@ -1,0 +1,30 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Vault metadata + password layer (always readable — can't decrypt without masterKey)
+    match /users/{userId}/vaultItems/{itemId} {
+      allow read:   if request.auth != null && request.auth.uid == userId;
+      allow create: if request.auth != null && request.auth.uid == userId;
+      allow update: if false;
+      allow delete: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Master key layer — SERVER TIME LOCK
+    // Firebase servers REFUSE to return this until server clock >= unlockTime
+    // update:false = unlockTime can NEVER be changed after creation
+    match /users/{userId}/vaultSecrets/{itemId} {
+      allow read:   if request.auth != null
+                     && request.auth.uid == userId
+                     && request.time.toMillis() >= resource.data.unlockTime;
+      allow create: if request.auth != null && request.auth.uid == userId;
+      allow update: if false;
+      allow delete: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Daily health ping — keeps database active
+    match /users/{userId}/health/{date} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}
