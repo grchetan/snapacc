@@ -28,10 +28,10 @@ export default function DurationPicker({ value, onChange }) {
       {/* Standard Freeze Commitments */}
       <div>
         <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-semibold text-[#90CAF9] uppercase tracking-wider">
+          <span className="text-xs font-bold text-[#0D47A1] uppercase tracking-wider">
             Freeze Durations
           </span>
-          <span className="text-[10px] font-semibold text-[#90CAF9] bg-[#0D47A1]/30 border border-[#90CAF9]/25 px-2 py-0.5 rounded-full">
+          <span className="text-[10px] font-bold text-[#0D47A1] bg-[#E3F2FD] border border-[#90CAF9] px-2 py-0.5 rounded-full">
             Recommended
           </span>
         </div>
@@ -48,12 +48,12 @@ export default function DurationPicker({ value, onChange }) {
       </div>
 
       {/* Quick Test Durations */}
-      <div className="pt-3 border-t border-[#90CAF9]/15">
+      <div className="pt-3 border-t border-blue-200/70">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-medium text-[#90CAF9]/70">
+          <span className="text-xs font-semibold text-[#1E4E8C]">
             Quick Test (Minutes)
           </span>
-          <span className="text-[10px] font-semibold text-[#90CAF9]/70 bg-[#07172e] border border-[#90CAF9]/15 px-1.5 py-0.5 rounded">
+          <span className="text-[10px] font-semibold text-[#1E4E8C] bg-white border border-blue-200 px-1.5 py-0.5 rounded">
             Test
           </span>
         </div>
@@ -79,12 +79,12 @@ function DurationButton({ duration, selected, onSelect, isTest = false }) {
       type="button"
       onClick={() => onSelect(duration.ms, duration.label)}
       className={`
-        py-2.5 px-2 rounded-xl text-xs font-medium transition-all text-center border backdrop-blur-md
+        py-2.5 px-2 rounded-xl text-xs font-semibold transition-all text-center border shadow-sm
         ${selected
-          ? 'bg-gradient-to-r from-[#1E88E5] to-[#2196F3] text-[#E3F2FD] font-bold border-[#90CAF9] shadow-[0_0_15px_rgba(33,150,243,0.35)] scale-[1.02]'
+          ? 'bg-gradient-to-r from-[#1E88E5] to-[#0D47A1] text-white font-bold border-[#0D47A1] shadow-md shadow-blue-500/20 scale-[1.02]'
           : isTest
-            ? 'bg-[#050f21]/70 border-[#90CAF9]/15 text-[#90CAF9]/70 hover:border-[#90CAF9]/35 hover:text-[#E3F2FD]'
-            : 'bg-[#0c1d38]/60 border-[#90CAF9]/20 text-[#90CAF9] hover:border-[#90CAF9]/40 hover:text-[#E3F2FD]'
+            ? 'bg-white/60 border-blue-200 text-[#1E4E8C] hover:bg-white hover:border-[#1E88E5]'
+            : 'bg-white/85 border-blue-200/90 text-[#0D47A1] hover:bg-white hover:border-[#1E88E5]'
         }
       `}
     >

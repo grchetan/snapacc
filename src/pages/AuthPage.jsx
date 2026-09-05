@@ -72,59 +72,59 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#030812] text-[#E3F2FD] flex flex-col items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-[#90CAF9] text-[#0A2558] flex flex-col items-center justify-center p-4 relative overflow-hidden">
       {/* Falling Snow Background */}
       <SnowEffect />
 
       <div className="w-full max-w-sm animate-slide-up relative z-10">
         {/* Brand Header */}
         <div className="text-center mb-8">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#1E88E5]/30 to-[#0D47A1]/40 border border-[#90CAF9]/40 flex items-center justify-center mx-auto mb-3 text-[#90CAF9] shadow-[0_0_25px_rgba(33,150,243,0.35)]">
-            <Snowflake className="w-7 h-7 text-[#90CAF9] animate-spin" style={{ animationDuration: '24s' }} />
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#1E88E5] to-[#0D47A1] flex items-center justify-center mx-auto mb-3 text-white shadow-md shadow-blue-500/25">
+            <Snowflake className="w-7 h-7 text-white animate-spin" style={{ animationDuration: '24s' }} />
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-[#E3F2FD]">
-            Time<span className="text-[#90CAF9]">Vault</span>
+          <h1 className="text-2xl font-extrabold tracking-tight text-[#0D47A1]">
+            Time<span className="text-[#1E88E5]">Vault</span>
           </h1>
-          <p className="text-xs text-[#90CAF9]/80 mt-1">
+          <p className="text-xs text-[#1E4E8C] font-semibold mt-1">
             Zero-knowledge cold storage credential lock
           </p>
         </div>
 
         {/* Card */}
-        <div className="bg-gradient-to-b from-[#0c2244]/80 via-[#081730]/85 to-[#050f21]/90 border border-[#90CAF9]/25 rounded-2xl p-6 shadow-[0_4px_30px_rgba(13,71,161,0.3)] backdrop-blur-xl">
+        <div className="bg-white/90 border border-white/80 rounded-3xl p-6 sm:p-7 shadow-[0_10px_35px_rgba(13,71,161,0.12)] backdrop-blur-xl">
           {/* FORGOT PASSWORD VIEW */}
           {view === 'forgot' ? (
             <>
               <button
                 onClick={() => { setView('signin'); reset(); }}
-                className="flex items-center gap-1.5 text-xs text-[#90CAF9]/80 hover:text-[#E3F2FD] transition-colors mb-4"
+                className="flex items-center gap-1.5 text-xs font-semibold text-[#1E4E8C] hover:text-[#0D47A1] transition-colors mb-4"
               >
                 <ArrowLeft className="w-3.5 h-3.5" />
                 <span>Back to sign in</span>
               </button>
 
               <div className="flex items-center gap-3 mb-5">
-                <div className="w-10 h-10 rounded-xl bg-[#0D47A1]/40 border border-[#90CAF9]/30 flex items-center justify-center text-[#90CAF9] shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-[#E3F2FD] border border-[#90CAF9] flex items-center justify-center text-[#0D47A1] shrink-0">
                   <Mail className="w-5 h-5" />
                 </div>
                 <div>
-                  <h2 className="text-sm font-bold text-[#E3F2FD]">Reset Password</h2>
-                  <p className="text-xs text-[#90CAF9]/80">We will send a reset link to your email</p>
+                  <h2 className="text-sm font-bold text-[#0A2558]">Reset Password</h2>
+                  <p className="text-xs text-[#1E4E8C]">We will send a reset link to your email</p>
                 </div>
               </div>
 
               {resetSent ? (
                 <div className="text-center py-4">
-                  <div className="w-10 h-10 rounded-full bg-emerald-500/15 text-emerald-300 flex items-center justify-center mx-auto mb-3 border border-emerald-400/30">
+                  <div className="w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-3 border border-emerald-300">
                     <CheckCircle2 className="w-5 h-5" />
                   </div>
-                  <h3 className="font-semibold text-xs text-[#E3F2FD] mb-1">Email Sent</h3>
-                  <p className="text-xs text-[#90CAF9]/80 mb-4 leading-relaxed">
-                    Check your inbox at <span className="text-[#E3F2FD] font-semibold">{email}</span> to reset your password.
+                  <h3 className="font-bold text-xs text-[#0A2558] mb-1">Email Sent</h3>
+                  <p className="text-xs text-[#1E4E8C] mb-4 leading-relaxed font-medium">
+                    Check your inbox at <span className="text-[#0D47A1] font-bold">{email}</span> to reset your password.
                   </p>
                   <button
                     onClick={() => { setView('signin'); reset(); setEmail(''); }}
-                    className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#1E88E5] to-[#2196F3] text-[#E3F2FD] text-xs font-semibold transition-all shadow-[0_0_15px_rgba(33,150,243,0.3)]"
+                    className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#1E88E5] to-[#0D47A1] text-white text-xs font-bold transition-all shadow-md shadow-blue-500/20"
                   >
                     Return to Sign In
                   </button>
@@ -132,7 +132,7 @@ export default function AuthPage() {
               ) : (
                 <form onSubmit={handleForgotPassword} className="space-y-4">
                   <div>
-                    <label className="block text-xs font-semibold text-[#90CAF9] uppercase tracking-wider mb-2">
+                    <label className="block text-xs font-bold text-[#0D47A1] uppercase tracking-wider mb-2">
                       Email Address
                     </label>
                     <input
@@ -141,7 +141,7 @@ export default function AuthPage() {
                       onChange={e => setEmail(e.target.value)}
                       required
                       placeholder="name@example.com"
-                      className="w-full px-4 py-2.5 rounded-xl bg-[#040e1e]/80 border border-[#90CAF9]/20 text-xs sm:text-sm text-[#E3F2FD] placeholder:text-[#90CAF9]/40 outline-none focus:border-[#2196F3] focus:shadow-[0_0_15px_rgba(33,150,243,0.3)] transition-all"
+                      className="w-full px-4 py-2.5 rounded-xl bg-white border border-blue-200 text-xs sm:text-sm text-[#0A2558] placeholder:text-zinc-400 outline-none focus:border-[#1E88E5] transition-all shadow-sm"
                       autoFocus
                     />
                   </div>
@@ -151,7 +151,7 @@ export default function AuthPage() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#1E88E5] to-[#2196F3] hover:from-[#2196F3] hover:to-[#64B5F6] text-[#E3F2FD] font-bold text-xs sm:text-sm transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(33,150,243,0.35)]"
+                    className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#1E88E5] to-[#0D47A1] hover:from-[#2196F3] hover:to-[#1565C0] text-white font-bold text-xs sm:text-sm transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-md shadow-blue-500/20"
                   >
                     {loading && <Spinner />}
                     <span>Send Reset Email</span>
@@ -163,15 +163,15 @@ export default function AuthPage() {
             /* SIGN IN / SIGN UP VIEW */
             <>
               {/* Segmented Control */}
-              <div className="flex rounded-xl bg-[#040e1e]/90 border border-[#90CAF9]/20 p-1 mb-5">
+              <div className="flex rounded-xl bg-blue-50 border border-blue-200 p-1 mb-5">
                 {['signin', 'signup'].map(v => (
                   <button
                     key={v}
                     onClick={() => { setView(v); reset(); }}
-                    className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                    className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition-all ${
                       view === v
-                        ? 'bg-gradient-to-r from-[#1E88E5]/80 to-[#2196F3]/80 text-[#E3F2FD] shadow-sm'
-                        : 'text-[#90CAF9]/70 hover:text-[#E3F2FD]'
+                        ? 'bg-white text-[#0D47A1] shadow-sm'
+                        : 'text-[#1E4E8C] hover:text-[#0D47A1]'
                     }`}
                   >
                     {v === 'signin' ? 'Sign In' : 'Sign Up'}
@@ -183,7 +183,7 @@ export default function AuthPage() {
               <button
                 onClick={handleGoogle}
                 disabled={loading}
-                className="w-full flex items-center justify-center gap-2.5 py-2.5 rounded-xl border border-[#90CAF9]/20 bg-[#040e1e]/60 hover:bg-[#071933] text-[#E3F2FD] text-xs sm:text-sm font-medium transition-all disabled:opacity-50 mb-4 shadow-sm"
+                className="w-full flex items-center justify-center gap-2.5 py-2.5 rounded-xl border border-blue-200 bg-white hover:bg-blue-50/60 text-[#0A2558] text-xs sm:text-sm font-semibold transition-all disabled:opacity-50 mb-4 shadow-sm"
               >
                 <GoogleIcon />
                 <span>Continue with Google</span>
@@ -191,16 +191,16 @@ export default function AuthPage() {
 
               <div className="relative mb-4">
                 <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-[#90CAF9]/15" />
+                  <div className="w-full border-t border-blue-200" />
                 </div>
-                <div className="relative flex justify-center text-[10px] text-[#90CAF9]/60 uppercase tracking-widest">
-                  <span className="bg-[#081730] px-2 font-medium">Or continue with email</span>
+                <div className="relative flex justify-center text-[10px] text-[#1E4E8C] uppercase tracking-widest">
+                  <span className="bg-white px-2 font-bold">Or continue with email</span>
                 </div>
               </div>
 
               <form onSubmit={handleEmailSubmit} className="space-y-3.5">
                 <div>
-                  <label className="block text-xs font-semibold text-[#90CAF9] uppercase tracking-wider mb-1.5">
+                  <label className="block text-xs font-bold text-[#0D47A1] uppercase tracking-wider mb-1.5">
                     Email
                   </label>
                   <input
@@ -209,20 +209,20 @@ export default function AuthPage() {
                     onChange={e => setEmail(e.target.value)}
                     required
                     placeholder="name@example.com"
-                    className="w-full px-4 py-2.5 rounded-xl bg-[#040e1e]/80 border border-[#90CAF9]/20 text-xs sm:text-sm text-[#E3F2FD] placeholder:text-[#90CAF9]/40 outline-none focus:border-[#2196F3] focus:shadow-[0_0_15px_rgba(33,150,243,0.3)] transition-all"
+                    className="w-full px-4 py-2.5 rounded-xl bg-white border border-blue-200 text-xs sm:text-sm text-[#0A2558] placeholder:text-zinc-400 outline-none focus:border-[#1E88E5] transition-all shadow-sm"
                   />
                 </div>
 
                 <div>
                   <div className="flex justify-between items-center mb-1.5">
-                    <label className="text-xs font-semibold text-[#90CAF9] uppercase tracking-wider">
+                    <label className="text-xs font-bold text-[#0D47A1] uppercase tracking-wider">
                       Password
                     </label>
                     {view === 'signin' && (
                       <button
                         type="button"
                         onClick={() => { setView('forgot'); reset(); }}
-                        className="text-xs text-[#90CAF9] hover:text-[#E3F2FD] transition-colors"
+                        className="text-xs text-[#1E88E5] hover:text-[#0D47A1] font-semibold transition-colors"
                       >
                         Forgot password?
                       </button>
@@ -236,12 +236,12 @@ export default function AuthPage() {
                       required
                       minLength={6}
                       placeholder="••••••••"
-                      className="w-full pl-4 pr-10 py-2.5 rounded-xl bg-[#040e1e]/80 border border-[#90CAF9]/20 text-xs sm:text-sm text-[#E3F2FD] placeholder:text-[#90CAF9]/40 outline-none focus:border-[#2196F3] focus:shadow-[0_0_15px_rgba(33,150,243,0.3)] transition-all font-mono"
+                      className="w-full pl-4 pr-10 py-2.5 rounded-xl bg-white border border-blue-200 text-xs sm:text-sm text-[#0A2558] placeholder:text-zinc-400 outline-none focus:border-[#1E88E5] transition-all font-mono shadow-sm"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPwd(p => !p)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-[#90CAF9]/60 hover:text-[#E3F2FD] transition-colors"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-[#0D47A1] transition-colors"
                       title={showPwd ? 'Hide' : 'Show'}
                     >
                       {showPwd ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -254,7 +254,7 @@ export default function AuthPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#1E88E5] to-[#2196F3] hover:from-[#2196F3] hover:to-[#64B5F6] text-[#E3F2FD] font-bold text-xs sm:text-sm transition-all disabled:opacity-50 flex items-center justify-center gap-2 mt-2 shadow-[0_0_20px_rgba(33,150,243,0.35)]"
+                  className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#1E88E5] to-[#0D47A1] hover:from-[#2196F3] hover:to-[#1565C0] text-white font-bold text-xs sm:text-sm transition-all disabled:opacity-50 flex items-center justify-center gap-2 mt-2 shadow-md shadow-blue-500/20"
                 >
                   {loading && <Spinner />}
                   <span>{view === 'signin' ? 'Sign In' : 'Create Account'}</span>
@@ -264,7 +264,7 @@ export default function AuthPage() {
           )}
         </div>
 
-        <p className="text-center text-[11px] text-[#90CAF9]/60 mt-6 leading-relaxed">
+        <p className="text-center text-[11px] text-[#0D47A1] font-medium mt-6 leading-relaxed">
           Protected by AES-256-GCM encryption & server-enforced cold locks.
         </p>
       </div>
@@ -274,15 +274,15 @@ export default function AuthPage() {
 
 function ErrorBox({ msg }) {
   return (
-    <div className="flex items-start gap-2 px-3 py-2 rounded-xl bg-red-950/40 border border-red-400/30 text-xs text-red-200">
-      <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
+    <div className="flex items-start gap-2 px-3 py-2 rounded-xl bg-red-50 border border-red-200 text-xs text-red-700">
+      <AlertCircle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
       <p>{msg}</p>
     </div>
   );
 }
 
 function Spinner() {
-  return <span className="w-3.5 h-3.5 border-2 border-[#E3F2FD]/30 border-t-[#E3F2FD] rounded-full animate-spin" />;
+  return <span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />;
 }
 
 function GoogleIcon() {
