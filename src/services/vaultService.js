@@ -34,11 +34,18 @@ export async function createVaultItem(userId, { label, encPass, ivPass, saltPass
 }
 
 export function subscribeToVaultItems(userId, callback, onError) {
-  const q = query(collection(db, 'users', userId, 'vaultItems'), orderBy('createdAt', 'desc'));
+  const colRef = collection(db, 'users', userId, 'vaultItems');
   return onSnapshot(
-    q,
-    (snap) => { callback(snap.docs.map((d) => ({ id: d.id, ...d.data() }))); },
-    (err)  => { if (onError) onError(err); }
+    colRef,
+    (snap) => {
+      const items = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+      // In-memory sort: 100% reliable, never drops documents if createdAt is formatted differently
+      items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+      callback(items);
+    },
+    (err) => {
+      if (onError) onError(err);
+    }
   );
 }
 

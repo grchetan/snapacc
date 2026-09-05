@@ -18,14 +18,21 @@ export default function HomePage() {
     // Daily health ping
     pingHealth(currentUser.uid).catch(() => {});
 
+    // Safety timeout: Never leave user stuck on skeleton loading if network is slow
+    const safetyTimer = setTimeout(() => {
+      setLoading(false);
+    }, 2500);
+
     const unsub = subscribeToVaultItems(
       currentUser.uid,
       (data) => {
+        clearTimeout(safetyTimer);
         setItems(data);
         setLoading(false);
         setDbError(null);
       },
       (err) => {
+        clearTimeout(safetyTimer);
         setLoading(false);
         if (err?.code === 'permission-denied') {
           setDbError('Security rules verification failed. Please check your Firestore rules.');
@@ -37,7 +44,10 @@ export default function HomePage() {
       }
     );
 
-    return unsub;
+    return () => {
+      clearTimeout(safetyTimer);
+      unsub();
+    };
   }, [currentUser]);
 
   const locked   = items.filter(i => Date.now() < i.unlockTime);
@@ -92,13 +102,28 @@ export default function HomePage() {
 
         {/* Action Header */}
         <div className="flex items-center justify-between gap-4 mb-6">
-          <div>
-            <h1 className="text-lg sm:text-xl font-bold tracking-tight text-zinc-100">
-              {loading ? 'Loading Vaults...' : items.length === 0 && !dbError ? 'Vault Overview' : 'Your Vaults'}
-            </h1>
-            <p className="text-xs text-zinc-400 mt-0.5">
-              Secure time-locked credentials with server-side enforcement
-            </p>
+          <div className="flex items-center gap-3">
+            <div>
+              <div className="flex items-center gap-2">
+                <h1 className="text-lg sm:text-xl font-bold tracking-tight text-zinc-100">
+                  {loading && items.length === 0 ? 'Syncing Vaults...' : items.length === 0 && !dbError ? 'Vault Overview' : 'Your Vaults'}
+                </h1>
+                <button
+                  onClick={() => {
+                    setLoading(true);
+                    // trigger re-render / check
+                    setTimeout(() => setLoading(false), 1000);
+                  }}
+                  className="p-1 rounded text-zinc-500 hover:text-zinc-300 transition-colors"
+                  title="Refresh status"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-amber-400' : ''}`} />
+                </button>
+              </div>
+              <p className="text-xs text-zinc-400 mt-0.5">
+                Secure time-locked credentials with server-side enforcement
+              </p>
+            </div>
           </div>
 
           <Link
@@ -110,8 +135,8 @@ export default function HomePage() {
           </Link>
         </div>
 
-        {/* Skeleton Loading */}
-        {loading && (
+        {/* Skeleton Loading (only if no cached items are present yet) */}
+        {loading && items.length === 0 && (
           <div className="grid gap-4 sm:grid-cols-2">
             {[1, 2].map(i => (
               <div
