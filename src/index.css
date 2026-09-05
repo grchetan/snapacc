@@ -12,32 +12,33 @@ html {
 }
 
 body {
-  background-color: #0a0a0f;
-  color: #e2e8f0;
+  background-color: #030812;
+  color: #E3F2FD;
   font-family: 'Inter', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
-/* Custom scrollbar */
+/* Cold Frost Custom scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #12121a;
+  background: #030812;
 }
 ::-webkit-scrollbar-thumb {
-  background: #2a2a3e;
+  background: #0D47A1;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #3a3a5e;
+  background: #2196F3;
 }
 
-/* Selection color */
+/* Ice Blue Text Selection */
 ::selection {
-  background-color: rgba(245, 158, 11, 0.25);
-  color: #fbbf24;
+  background-color: rgba(33, 150, 243, 0.4);
+  color: #E3F2FD;
 }
 
 /* Remove number input spinners */
@@ -47,8 +48,30 @@ input[type=number]::-webkit-outer-spin-button {
   margin: 0;
 }
 
-/* Focus ring override — use amber */
+/* Focus ring override — Arctic blue */
 :focus-visible {
-  outline: 2px solid rgba(245, 158, 11, 0.5);
+  outline: 2px solid rgba(33, 150, 243, 0.7);
   outline-offset: 2px;
+}
+
+/* Frosted glass utility */
+.frosted-glass {
+  background: rgba(12, 29, 56, 0.55);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(144, 202, 249, 0.16);
+  box-shadow: 0 8px 32px 0 rgba(13, 71, 161, 0.18);
+}
+
+.frosted-card {
+  background: linear-gradient(135deg, rgba(14, 34, 66, 0.65) 0%, rgba(8, 20, 38, 0.75) 100%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(144, 202, 249, 0.18);
+  box-shadow: 0 4px 24px -1px rgba(13, 71, 161, 0.22);
+}
+
+.frosted-card:hover {
+  border-color: rgba(144, 202, 249, 0.35);
+  box-shadow: 0 6px 30px -1px rgba(33, 150, 243, 0.25);
 }

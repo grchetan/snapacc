@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, AlertCircle, ArrowLeft, Mail, CheckCircle2, Shield } from 'lucide-react';
+import { Eye, EyeOff, AlertCircle, ArrowLeft, Mail, CheckCircle2, Snowflake } from 'lucide-react';
+import SnowEffect from '../components/SnowEffect';
 import { useAuth } from '../context/AuthContext';
 
 export default function AuthPage() {
@@ -71,56 +72,59 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col items-center justify-center p-4">
-      <div className="w-full max-w-sm animate-slide-up">
+    <div className="min-h-screen bg-[#030812] text-[#E3F2FD] flex flex-col items-center justify-center p-4 relative overflow-hidden">
+      {/* Falling Snow Background */}
+      <SnowEffect />
+
+      <div className="w-full max-w-sm animate-slide-up relative z-10">
         {/* Brand Header */}
         <div className="text-center mb-8">
-          <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/25 flex items-center justify-center mx-auto mb-3 text-amber-400">
-            <Shield className="w-6 h-6" />
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#1E88E5]/30 to-[#0D47A1]/40 border border-[#90CAF9]/40 flex items-center justify-center mx-auto mb-3 text-[#90CAF9] shadow-[0_0_25px_rgba(33,150,243,0.35)]">
+            <Snowflake className="w-7 h-7 text-[#90CAF9] animate-spin" style={{ animationDuration: '24s' }} />
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-zinc-100">
-            Time<span className="text-amber-400">Vault</span>
+          <h1 className="text-2xl font-bold tracking-tight text-[#E3F2FD]">
+            Time<span className="text-[#90CAF9]">Vault</span>
           </h1>
-          <p className="text-xs text-zinc-400 mt-1">
-            Zero-knowledge time-locked credential manager
+          <p className="text-xs text-[#90CAF9]/80 mt-1">
+            Zero-knowledge cold storage credential lock
           </p>
         </div>
 
         {/* Card */}
-        <div className="bg-zinc-900/80 border border-zinc-800 rounded-2xl p-6 shadow-sm">
+        <div className="bg-gradient-to-b from-[#0c2244]/80 via-[#081730]/85 to-[#050f21]/90 border border-[#90CAF9]/25 rounded-2xl p-6 shadow-[0_4px_30px_rgba(13,71,161,0.3)] backdrop-blur-xl">
           {/* FORGOT PASSWORD VIEW */}
           {view === 'forgot' ? (
             <>
               <button
                 onClick={() => { setView('signin'); reset(); }}
-                className="flex items-center gap-1.5 text-xs text-zinc-400 hover:text-zinc-200 transition-colors mb-4"
+                className="flex items-center gap-1.5 text-xs text-[#90CAF9]/80 hover:text-[#E3F2FD] transition-colors mb-4"
               >
                 <ArrowLeft className="w-3.5 h-3.5" />
                 <span>Back to sign in</span>
               </button>
 
               <div className="flex items-center gap-3 mb-5">
-                <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/25 flex items-center justify-center text-amber-400 shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-[#0D47A1]/40 border border-[#90CAF9]/30 flex items-center justify-center text-[#90CAF9] shrink-0">
                   <Mail className="w-5 h-5" />
                 </div>
                 <div>
-                  <h2 className="text-sm font-bold text-zinc-100">Reset Password</h2>
-                  <p className="text-xs text-zinc-400">We will send a reset link to your email</p>
+                  <h2 className="text-sm font-bold text-[#E3F2FD]">Reset Password</h2>
+                  <p className="text-xs text-[#90CAF9]/80">We will send a reset link to your email</p>
                 </div>
               </div>
 
               {resetSent ? (
                 <div className="text-center py-4">
-                  <div className="w-10 h-10 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center mx-auto mb-3 border border-emerald-500/20">
+                  <div className="w-10 h-10 rounded-full bg-emerald-500/15 text-emerald-300 flex items-center justify-center mx-auto mb-3 border border-emerald-400/30">
                     <CheckCircle2 className="w-5 h-5" />
                   </div>
-                  <h3 className="font-semibold text-xs text-zinc-100 mb-1">Email Sent</h3>
-                  <p className="text-xs text-zinc-400 mb-4 leading-relaxed">
-                    Check your inbox at <span className="text-zinc-200 font-medium">{email}</span> to reset your password.
+                  <h3 className="font-semibold text-xs text-[#E3F2FD] mb-1">Email Sent</h3>
+                  <p className="text-xs text-[#90CAF9]/80 mb-4 leading-relaxed">
+                    Check your inbox at <span className="text-[#E3F2FD] font-semibold">{email}</span> to reset your password.
                   </p>
                   <button
                     onClick={() => { setView('signin'); reset(); setEmail(''); }}
-                    className="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 text-xs font-semibold transition-all"
+                    className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#1E88E5] to-[#2196F3] text-[#E3F2FD] text-xs font-semibold transition-all shadow-[0_0_15px_rgba(33,150,243,0.3)]"
                   >
                     Return to Sign In
                   </button>
@@ -128,7 +132,7 @@ export default function AuthPage() {
               ) : (
                 <form onSubmit={handleForgotPassword} className="space-y-4">
                   <div>
-                    <label className="block text-xs font-semibold text-zinc-300 uppercase tracking-wider mb-2">
+                    <label className="block text-xs font-semibold text-[#90CAF9] uppercase tracking-wider mb-2">
                       Email Address
                     </label>
                     <input
@@ -137,7 +141,7 @@ export default function AuthPage() {
                       onChange={e => setEmail(e.target.value)}
                       required
                       placeholder="name@example.com"
-                      className="w-full px-4 py-2.5 rounded-xl bg-zinc-950/70 border border-zinc-800 text-xs sm:text-sm text-zinc-100 placeholder:text-zinc-500 outline-none focus:border-amber-500/60 transition-colors"
+                      className="w-full px-4 py-2.5 rounded-xl bg-[#040e1e]/80 border border-[#90CAF9]/20 text-xs sm:text-sm text-[#E3F2FD] placeholder:text-[#90CAF9]/40 outline-none focus:border-[#2196F3] focus:shadow-[0_0_15px_rgba(33,150,243,0.3)] transition-all"
                       autoFocus
                     />
                   </div>
@@ -147,7 +151,7 @@ export default function AuthPage() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold text-xs sm:text-sm transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                    className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#1E88E5] to-[#2196F3] hover:from-[#2196F3] hover:to-[#64B5F6] text-[#E3F2FD] font-bold text-xs sm:text-sm transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(33,150,243,0.35)]"
                   >
                     {loading && <Spinner />}
                     <span>Send Reset Email</span>
@@ -159,15 +163,15 @@ export default function AuthPage() {
             /* SIGN IN / SIGN UP VIEW */
             <>
               {/* Segmented Control */}
-              <div className="flex rounded-xl bg-zinc-950 border border-zinc-800 p-1 mb-5">
+              <div className="flex rounded-xl bg-[#040e1e]/90 border border-[#90CAF9]/20 p-1 mb-5">
                 {['signin', 'signup'].map(v => (
                   <button
                     key={v}
                     onClick={() => { setView(v); reset(); }}
                     className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                       view === v
-                        ? 'bg-zinc-800 text-zinc-100 shadow-sm'
-                        : 'text-zinc-400 hover:text-zinc-200'
+                        ? 'bg-gradient-to-r from-[#1E88E5]/80 to-[#2196F3]/80 text-[#E3F2FD] shadow-sm'
+                        : 'text-[#90CAF9]/70 hover:text-[#E3F2FD]'
                     }`}
                   >
                     {v === 'signin' ? 'Sign In' : 'Sign Up'}
@@ -179,7 +183,7 @@ export default function AuthPage() {
               <button
                 onClick={handleGoogle}
                 disabled={loading}
-                className="w-full flex items-center justify-center gap-2.5 py-2.5 rounded-xl border border-zinc-800 bg-zinc-950/60 hover:bg-zinc-950 text-zinc-200 text-xs sm:text-sm font-medium transition-all disabled:opacity-50 mb-4"
+                className="w-full flex items-center justify-center gap-2.5 py-2.5 rounded-xl border border-[#90CAF9]/20 bg-[#040e1e]/60 hover:bg-[#071933] text-[#E3F2FD] text-xs sm:text-sm font-medium transition-all disabled:opacity-50 mb-4 shadow-sm"
               >
                 <GoogleIcon />
                 <span>Continue with Google</span>
@@ -187,16 +191,16 @@ export default function AuthPage() {
 
               <div className="relative mb-4">
                 <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-zinc-800" />
+                  <div className="w-full border-t border-[#90CAF9]/15" />
                 </div>
-                <div className="relative flex justify-center text-[10px] text-zinc-500 uppercase tracking-widest">
-                  <span className="bg-zinc-900 px-2 font-medium">Or continue with email</span>
+                <div className="relative flex justify-center text-[10px] text-[#90CAF9]/60 uppercase tracking-widest">
+                  <span className="bg-[#081730] px-2 font-medium">Or continue with email</span>
                 </div>
               </div>
 
               <form onSubmit={handleEmailSubmit} className="space-y-3.5">
                 <div>
-                  <label className="block text-xs font-semibold text-zinc-300 uppercase tracking-wider mb-1.5">
+                  <label className="block text-xs font-semibold text-[#90CAF9] uppercase tracking-wider mb-1.5">
                     Email
                   </label>
                   <input
@@ -205,20 +209,20 @@ export default function AuthPage() {
                     onChange={e => setEmail(e.target.value)}
                     required
                     placeholder="name@example.com"
-                    className="w-full px-4 py-2.5 rounded-xl bg-zinc-950/70 border border-zinc-800 text-xs sm:text-sm text-zinc-100 placeholder:text-zinc-500 outline-none focus:border-amber-500/60 transition-colors"
+                    className="w-full px-4 py-2.5 rounded-xl bg-[#040e1e]/80 border border-[#90CAF9]/20 text-xs sm:text-sm text-[#E3F2FD] placeholder:text-[#90CAF9]/40 outline-none focus:border-[#2196F3] focus:shadow-[0_0_15px_rgba(33,150,243,0.3)] transition-all"
                   />
                 </div>
 
                 <div>
                   <div className="flex justify-between items-center mb-1.5">
-                    <label className="text-xs font-semibold text-zinc-300 uppercase tracking-wider">
+                    <label className="text-xs font-semibold text-[#90CAF9] uppercase tracking-wider">
                       Password
                     </label>
                     {view === 'signin' && (
                       <button
                         type="button"
                         onClick={() => { setView('forgot'); reset(); }}
-                        className="text-xs text-amber-400 hover:text-amber-300 transition-colors"
+                        className="text-xs text-[#90CAF9] hover:text-[#E3F2FD] transition-colors"
                       >
                         Forgot password?
                       </button>
@@ -232,12 +236,12 @@ export default function AuthPage() {
                       required
                       minLength={6}
                       placeholder="••••••••"
-                      className="w-full pl-4 pr-10 py-2.5 rounded-xl bg-zinc-950/70 border border-zinc-800 text-xs sm:text-sm text-zinc-100 placeholder:text-zinc-500 outline-none focus:border-amber-500/60 transition-colors font-mono"
+                      className="w-full pl-4 pr-10 py-2.5 rounded-xl bg-[#040e1e]/80 border border-[#90CAF9]/20 text-xs sm:text-sm text-[#E3F2FD] placeholder:text-[#90CAF9]/40 outline-none focus:border-[#2196F3] focus:shadow-[0_0_15px_rgba(33,150,243,0.3)] transition-all font-mono"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPwd(p => !p)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 transition-colors"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-[#90CAF9]/60 hover:text-[#E3F2FD] transition-colors"
                       title={showPwd ? 'Hide' : 'Show'}
                     >
                       {showPwd ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -250,7 +254,7 @@ export default function AuthPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold text-xs sm:text-sm transition-all disabled:opacity-50 flex items-center justify-center gap-2 mt-2"
+                  className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#1E88E5] to-[#2196F3] hover:from-[#2196F3] hover:to-[#64B5F6] text-[#E3F2FD] font-bold text-xs sm:text-sm transition-all disabled:opacity-50 flex items-center justify-center gap-2 mt-2 shadow-[0_0_20px_rgba(33,150,243,0.35)]"
                 >
                   {loading && <Spinner />}
                   <span>{view === 'signin' ? 'Sign In' : 'Create Account'}</span>
@@ -260,8 +264,8 @@ export default function AuthPage() {
           )}
         </div>
 
-        <p className="text-center text-[11px] text-zinc-500 mt-6 leading-relaxed">
-          Protected by AES-256-GCM encryption & server-enforced time locks.
+        <p className="text-center text-[11px] text-[#90CAF9]/60 mt-6 leading-relaxed">
+          Protected by AES-256-GCM encryption & server-enforced cold locks.
         </p>
       </div>
     </div>
@@ -270,7 +274,7 @@ export default function AuthPage() {
 
 function ErrorBox({ msg }) {
   return (
-    <div className="flex items-start gap-2 px-3 py-2 rounded-xl bg-red-950/30 border border-red-500/30 text-xs text-red-300">
+    <div className="flex items-start gap-2 px-3 py-2 rounded-xl bg-red-950/40 border border-red-400/30 text-xs text-red-200">
       <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
       <p>{msg}</p>
     </div>
@@ -278,7 +282,7 @@ function ErrorBox({ msg }) {
 }
 
 function Spinner() {
-  return <span className="w-3.5 h-3.5 border-2 border-zinc-950/30 border-t-zinc-950 rounded-full animate-spin" />;
+  return <span className="w-3.5 h-3.5 border-2 border-[#E3F2FD]/30 border-t-[#E3F2FD] rounded-full animate-spin" />;
 }
 
 function GoogleIcon() {

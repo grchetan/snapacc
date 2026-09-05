@@ -25,11 +25,13 @@ const REAL_DURATIONS = [
 export default function DurationPicker({ value, onChange }) {
   return (
     <div className="space-y-4">
-      {/* Standard Commitments */}
+      {/* Standard Freeze Commitments */}
       <div>
         <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-medium text-zinc-400">Standard Durations</span>
-          <span className="text-[10px] uppercase font-semibold text-zinc-500 bg-zinc-900 border border-zinc-800 px-1.5 py-0.5 rounded">
+          <span className="text-xs font-semibold text-[#90CAF9] uppercase tracking-wider">
+            Freeze Durations
+          </span>
+          <span className="text-[10px] font-semibold text-[#90CAF9] bg-[#0D47A1]/30 border border-[#90CAF9]/25 px-2 py-0.5 rounded-full">
             Recommended
           </span>
         </div>
@@ -46,10 +48,12 @@ export default function DurationPicker({ value, onChange }) {
       </div>
 
       {/* Quick Test Durations */}
-      <div className="pt-2 border-t border-zinc-800/60">
+      <div className="pt-3 border-t border-[#90CAF9]/15">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-xs font-medium text-zinc-500">Short Duration (Testing)</span>
-          <span className="text-[10px] uppercase font-semibold text-amber-500/70 bg-amber-500/10 border border-amber-500/20 px-1.5 py-0.5 rounded">
+          <span className="text-xs font-medium text-[#90CAF9]/70">
+            Quick Test (Minutes)
+          </span>
+          <span className="text-[10px] font-semibold text-[#90CAF9]/70 bg-[#07172e] border border-[#90CAF9]/15 px-1.5 py-0.5 rounded">
             Test
           </span>
         </div>
@@ -75,12 +79,12 @@ function DurationButton({ duration, selected, onSelect, isTest = false }) {
       type="button"
       onClick={() => onSelect(duration.ms, duration.label)}
       className={`
-        py-2 px-2.5 rounded-xl text-xs font-medium transition-all border text-center
+        py-2.5 px-2 rounded-xl text-xs font-medium transition-all text-center border backdrop-blur-md
         ${selected
-          ? 'bg-amber-500 text-zinc-950 font-bold border-amber-400 shadow-sm shadow-amber-500/10'
+          ? 'bg-gradient-to-r from-[#1E88E5] to-[#2196F3] text-[#E3F2FD] font-bold border-[#90CAF9] shadow-[0_0_15px_rgba(33,150,243,0.35)] scale-[1.02]'
           : isTest
-            ? 'bg-zinc-950/60 border-zinc-800/80 text-zinc-400 hover:border-zinc-700 hover:text-zinc-200'
-            : 'bg-zinc-900/80 border-zinc-800 text-zinc-300 hover:border-zinc-700 hover:text-zinc-100'
+            ? 'bg-[#050f21]/70 border-[#90CAF9]/15 text-[#90CAF9]/70 hover:border-[#90CAF9]/35 hover:text-[#E3F2FD]'
+            : 'bg-[#0c1d38]/60 border-[#90CAF9]/20 text-[#90CAF9] hover:border-[#90CAF9]/40 hover:text-[#E3F2FD]'
         }
       `}
     >

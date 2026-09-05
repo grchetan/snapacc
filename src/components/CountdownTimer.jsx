@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
+import { Sparkles } from 'lucide-react';
 
 /**
- * High-legibility countdown timer.
- * Clean, modern layout without loud borders.
+ * Cold Ice Digital Countdown Timer.
+ * Styled with crisp icy-blue digital units and soft frosty glows.
  */
 export default function CountdownTimer({ unlockTime, onExpired }) {
   const [timeLeft, setTimeLeft] = useState(getTimeLeft(unlockTime));
@@ -22,9 +23,9 @@ export default function CountdownTimer({ unlockTime, onExpired }) {
 
   if (timeLeft.total <= 0) {
     return (
-      <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-medium text-xs">
-        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-        Ready to decrypt
+      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 font-medium text-xs shadow-[0_0_12px_rgba(16,185,129,0.2)]">
+        <Sparkles className="w-3.5 h-3.5 text-emerald-300 animate-pulse" />
+        <span>Thawed & Ready</span>
       </div>
     );
   }
@@ -45,11 +46,15 @@ export default function CountdownTimer({ unlockTime, onExpired }) {
 
 function TimeUnit({ value, unit, highlight = false }) {
   return (
-    <div className="flex items-baseline bg-zinc-900/90 border border-zinc-800 px-2 py-1 rounded-md">
-      <span className={`font-semibold tabular-nums ${highlight ? 'text-amber-400' : 'text-zinc-200'}`}>
+    <div className={`flex items-baseline px-2 py-1 rounded-lg border backdrop-blur-md shadow-sm ${
+      highlight
+        ? 'bg-[#0c2244]/90 border-[#90CAF9]/40 shadow-[0_0_10px_rgba(33,150,243,0.2)]'
+        : 'bg-[#07172e]/80 border-[#90CAF9]/20'
+    }`}>
+      <span className={`font-bold tabular-nums ${highlight ? 'text-[#90CAF9]' : 'text-[#E3F2FD]'}`}>
         {String(value).padStart(2, '0')}
       </span>
-      <span className="text-[10px] text-zinc-500 font-sans ml-1 font-medium lowercase">
+      <span className="text-[10px] text-[#90CAF9]/70 font-sans ml-1 font-medium lowercase">
         {unit}
       </span>
     </div>
