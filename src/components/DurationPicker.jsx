@@ -29,7 +29,7 @@ export default function DurationPicker({ value, onChange }) {
       <div>
         <div className="flex items-center justify-between mb-2">
           <span className="text-xs font-bold text-[#0D47A1] uppercase tracking-wider">
-            Freeze Durations
+            Standard Locks
           </span>
           <span className="text-[10px] font-bold text-[#0D47A1] bg-[#E3F2FD] border border-[#90CAF9] px-2 py-0.5 rounded-full">
             Recommended
