@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
 
 /**
- * Live countdown timer that ticks every second.
- * @param {number} unlockTime  Unix timestamp (ms) when vault opens
- * @param {function} onExpired Called when timer reaches zero
+ * High-legibility countdown timer.
+ * Clean, modern layout without loud borders.
  */
 export default function CountdownTimer({ unlockTime, onExpired }) {
   const [timeLeft, setTimeLeft] = useState(getTimeLeft(unlockTime));
@@ -23,9 +22,9 @@ export default function CountdownTimer({ unlockTime, onExpired }) {
 
   if (timeLeft.total <= 0) {
     return (
-      <div className="flex items-center gap-1.5 text-vault-green font-medium text-sm">
-        <span className="w-2 h-2 rounded-full bg-vault-green animate-pulse inline-block" />
-        Unlocked
+      <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-medium text-xs">
+        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+        Ready to decrypt
       </div>
     );
   }
@@ -33,30 +32,27 @@ export default function CountdownTimer({ unlockTime, onExpired }) {
   const { days, hours, minutes, seconds } = timeLeft;
 
   return (
-    <div className="flex items-center gap-1 font-mono text-sm">
+    <div className="inline-flex items-center gap-1.5 font-mono text-xs sm:text-sm">
       {days > 0 && (
-        <>
-          <TimeUnit value={days} label="d" />
-          <span className="text-vault-muted">:</span>
-        </>
+        <TimeUnit value={days} unit="d" />
       )}
-      <TimeUnit value={hours} label="h" />
-      <span className="text-vault-muted">:</span>
-      <TimeUnit value={minutes} label="m" />
-      <span className="text-vault-muted">:</span>
-      <TimeUnit value={seconds} label="s" />
+      <TimeUnit value={hours} unit="h" />
+      <TimeUnit value={minutes} unit="m" />
+      <TimeUnit value={seconds} unit="s" highlight />
     </div>
   );
 }
 
-function TimeUnit({ value, label }) {
+function TimeUnit({ value, unit, highlight = false }) {
   return (
-    <span className="flex items-baseline gap-0.5">
-      <span className="text-amber-400 font-bold tabular-nums w-6 text-right">
+    <div className="flex items-baseline bg-zinc-900/90 border border-zinc-800 px-2 py-1 rounded-md">
+      <span className={`font-semibold tabular-nums ${highlight ? 'text-amber-400' : 'text-zinc-200'}`}>
         {String(value).padStart(2, '0')}
       </span>
-      <span className="text-vault-muted text-xs">{label}</span>
-    </span>
+      <span className="text-[10px] text-zinc-500 font-sans ml-1 font-medium lowercase">
+        {unit}
+      </span>
+    </div>
   );
 }
 

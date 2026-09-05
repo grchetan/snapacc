@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Plus, Lock, Unlock, AlertCircle, RefreshCw } from 'lucide-react';
+import { Plus, Lock, Unlock, Layers, AlertCircle, RefreshCw, Shield } from 'lucide-react';
 import Navbar from '../components/Navbar';
 import VaultCard from '../components/VaultCard';
 import { useAuth } from '../context/AuthContext';
@@ -15,20 +15,24 @@ export default function HomePage() {
   useEffect(() => {
     if (!currentUser) return;
 
-    // Daily health ping — keeps Firestore active (silently)
+    // Daily health ping
     pingHealth(currentUser.uid).catch(() => {});
 
     const unsub = subscribeToVaultItems(
       currentUser.uid,
-      (data) => { setItems(data); setLoading(false); setDbError(null); },
-      (err)  => {
+      (data) => {
+        setItems(data);
+        setLoading(false);
+        setDbError(null);
+      },
+      (err) => {
         setLoading(false);
         if (err?.code === 'permission-denied') {
-          setDbError('Firestore security rules not published yet. Go to Firebase Console → Firestore → Rules → Publish.');
+          setDbError('Security rules verification failed. Please check your Firestore rules.');
         } else if (err?.code === 'unavailable' || err?.message?.includes('offline')) {
-          setDbError('Cannot connect to Firestore. Make sure the database is created in Firebase Console.');
+          setDbError('Unable to connect to database. Please check your connection.');
         } else {
-          setDbError(`Database error: ${err?.code || err?.message}`);
+          setDbError(`Database status: ${err?.code || err?.message}`);
         }
       }
     );
@@ -40,89 +44,132 @@ export default function HomePage() {
   const unlocked = items.filter(i => Date.now() >= i.unlockTime);
 
   return (
-    <div className="min-h-screen bg-vault-bg">
+    <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col">
       <Navbar />
-      <main className="mx-auto max-w-5xl px-4 py-8">
 
-        {/* Database error banner */}
+      <main className="mx-auto max-w-5xl px-4 py-8 flex-1 w-full">
+        {/* Error Notification */}
         {dbError && (
-          <div className="mb-6 flex items-start gap-3 px-4 py-3 rounded-xl bg-red-950/30 border border-red-500/30">
-            <AlertCircle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
+          <div className="mb-6 flex items-start gap-3 px-4 py-3 rounded-xl bg-red-950/30 border border-red-500/30 text-xs text-red-200">
+            <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
             <div className="flex-1">
-              <p className="text-sm font-medium text-red-300">Database Connection Error</p>
-              <p className="text-xs text-red-400/80 mt-0.5">{dbError}</p>
+              <p className="font-semibold text-red-300">Connection Error</p>
+              <p className="text-red-400/80 mt-0.5">{dbError}</p>
             </div>
-            <button onClick={() => window.location.reload()} className="shrink-0 p-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 transition-all">
-              <RefreshCw className="w-4 h-4" />
+            <button
+              onClick={() => window.location.reload()}
+              className="p-1 rounded bg-red-500/10 hover:bg-red-500/20 text-red-400"
+              title="Refresh"
+            >
+              <RefreshCw className="w-3.5 h-3.5" />
             </button>
           </div>
         )}
 
-        {/* Stats bar */}
+        {/* Dashboard Metrics */}
         {items.length > 0 && (
-          <div className="grid grid-cols-3 gap-4 mb-8">
-            <StatCard icon="🔒" label="Active locks" value={locked.length}   color="amber" />
-            <StatCard icon="🔓" label="Unlocked"     value={unlocked.length} color="green" />
-            <StatCard icon="🏛️" label="Total"        value={items.length}    color="gray"  />
+          <div className="grid grid-cols-3 gap-3 sm:gap-4 mb-8">
+            <MetricCard
+              icon={Lock}
+              label="Active Locks"
+              value={locked.length}
+              variant="amber"
+            />
+            <MetricCard
+              icon={Unlock}
+              label="Unlocked"
+              value={unlocked.length}
+              variant="emerald"
+            />
+            <MetricCard
+              icon={Layers}
+              label="Total Vaults"
+              value={items.length}
+              variant="neutral"
+            />
           </div>
         )}
 
-        {/* Header row */}
-        <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold text-vault-text">
-            {loading ? 'Loading…' : items.length === 0 && !dbError ? 'Your vault is empty' : 'Your Vaults'}
-          </h2>
+        {/* Action Header */}
+        <div className="flex items-center justify-between gap-4 mb-6">
+          <div>
+            <h1 className="text-lg sm:text-xl font-bold tracking-tight text-zinc-100">
+              {loading ? 'Loading Vaults...' : items.length === 0 && !dbError ? 'Vault Overview' : 'Your Vaults'}
+            </h1>
+            <p className="text-xs text-zinc-400 mt-0.5">
+              Secure time-locked credentials with server-side enforcement
+            </p>
+          </div>
+
           <Link
             to="/new"
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 font-semibold text-sm transition-all"
+            className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 font-semibold text-xs sm:text-sm transition-all shadow-sm shadow-amber-500/10"
           >
-            <Plus className="w-4 h-4" /> New Lock
+            <Plus className="w-4 h-4" />
+            <span>New Lock</span>
           </Link>
         </div>
 
-        {/* Loading skeletons */}
+        {/* Skeleton Loading */}
         {loading && (
-          <div className="space-y-4">
+          <div className="grid gap-4 sm:grid-cols-2">
             {[1, 2].map(i => (
-              <div key={i} className="h-44 rounded-2xl bg-vault-card border border-vault-border animate-pulse" />
+              <div
+                key={i}
+                className="h-44 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 animate-pulse"
+              />
             ))}
           </div>
         )}
 
-        {/* Empty state */}
+        {/* Empty State */}
         {!loading && !dbError && items.length === 0 && (
-          <div className="text-center py-20">
-            <div className="text-5xl mb-4">🔒</div>
-            <h3 className="text-lg font-semibold text-vault-text mb-2">No vaults yet</h3>
-            <p className="text-sm text-vault-muted mb-6 max-w-xs mx-auto">
-              Lock a social media or gaming password behind a countdown timer. Once locked, no one can access it until the timer ends.
+          <div className="text-center py-20 px-4 rounded-2xl border border-dashed border-zinc-800/80 bg-zinc-900/30">
+            <div className="w-12 h-12 rounded-2xl bg-zinc-800/60 border border-zinc-700/60 flex items-center justify-center mx-auto mb-4 text-zinc-400">
+              <Shield className="w-6 h-6" />
+            </div>
+            <h2 className="text-base font-semibold text-zinc-200 mb-1">
+              No Vaults Created Yet
+            </h2>
+            <p className="text-xs text-zinc-400 max-w-sm mx-auto mb-6 leading-relaxed">
+              Lock distracting social media, gaming, or confidential passwords behind an immutable countdown timer.
             </p>
-            <Link to="/new" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 font-semibold text-sm transition-all">
-              <Plus className="w-4 h-4" /> Create your first lock
+            <Link
+              to="/new"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 font-semibold text-xs sm:text-sm transition-all"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Create First Lock</span>
             </Link>
           </div>
         )}
 
-        {/* Locked items */}
+        {/* Active Locked Section */}
         {!loading && locked.length > 0 && (
           <section className="mb-8">
-            <h3 className="text-xs font-semibold uppercase tracking-widest text-vault-muted mb-3 flex items-center gap-2">
-              <Lock className="w-3.5 h-3.5" /> Locked ({locked.length})
-            </h3>
+            <div className="flex items-center gap-2 mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+              <Lock className="w-3.5 h-3.5 text-amber-400" />
+              <span>Active Locks ({locked.length})</span>
+            </div>
             <div className="grid gap-4 sm:grid-cols-2">
-              {locked.map(item => <VaultCard key={item.id} item={item} />)}
+              {locked.map(item => (
+                <VaultCard key={item.id} item={item} />
+              ))}
             </div>
           </section>
         )}
 
-        {/* Unlocked items */}
+        {/* Unlocked / Ready Section */}
         {!loading && unlocked.length > 0 && (
           <section>
-            <h3 className="text-xs font-semibold uppercase tracking-widest text-vault-muted mb-3 flex items-center gap-2">
-              <Unlock className="w-3.5 h-3.5 text-green-400" /> Ready to reveal ({unlocked.length})
-            </h3>
+            <div className="flex items-center gap-2 mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+              <Unlock className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Ready to Decrypt ({unlocked.length})</span>
+            </div>
             <div className="grid gap-4 sm:grid-cols-2">
-              {unlocked.map(item => <VaultCard key={item.id} item={item} />)}
+              {unlocked.map(item => (
+                <VaultCard key={item.id} item={item} />
+              ))}
             </div>
           </section>
         )}
@@ -131,19 +178,37 @@ export default function HomePage() {
   );
 }
 
-function StatCard({ icon, label, value, color }) {
-  const colors = {
-    amber: 'bg-amber-500/5 border-amber-500/15',
-    green: 'bg-green-500/5 border-green-500/15',
-    gray:  'bg-vault-surface border-vault-border',
+function MetricCard({ icon: Icon, label, value, variant = 'neutral' }) {
+  const styles = {
+    amber: {
+      badge: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
+      border: 'border-zinc-800/80 bg-zinc-900/60',
+    },
+    emerald: {
+      badge: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
+      border: 'border-zinc-800/80 bg-zinc-900/60',
+    },
+    neutral: {
+      badge: 'bg-zinc-800 text-zinc-400 border-zinc-700',
+      border: 'border-zinc-800/80 bg-zinc-900/60',
+    },
   };
+
+  const current = styles[variant] || styles.neutral;
+
   return (
-    <div className={`rounded-xl border p-4 ${colors[color]}`}>
-      <div className="flex items-center gap-2 mb-1">
-        <span>{icon}</span>
-        <span className="text-xs text-vault-muted">{label}</span>
+    <div className={`rounded-2xl border p-4 sm:p-5 ${current.border}`}>
+      <div className="flex items-center justify-between gap-2 mb-2">
+        <span className="text-[11px] sm:text-xs font-medium text-zinc-400 uppercase tracking-wider">
+          {label}
+        </span>
+        <div className={`w-7 h-7 rounded-lg border flex items-center justify-center shrink-0 ${current.badge}`}>
+          <Icon className="w-3.5 h-3.5" />
+        </div>
       </div>
-      <p className="text-2xl font-bold text-vault-text">{value}</p>
+      <p className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-100 font-mono">
+        {value}
+      </p>
     </div>
   );
 }

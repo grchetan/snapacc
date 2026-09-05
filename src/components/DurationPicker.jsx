@@ -1,10 +1,10 @@
 const TEST_DURATIONS = [
-  { label: '1 min',  ms: 60 * 1000,        group: 'test' },
-  { label: '2 min',  ms: 2 * 60 * 1000,    group: 'test' },
-  { label: '5 min',  ms: 5 * 60 * 1000,    group: 'test' },
-  { label: '10 min', ms: 10 * 60 * 1000,   group: 'test' },
-  { label: '30 min', ms: 30 * 60 * 1000,   group: 'test' },
-  { label: '1 hour', ms: 60 * 60 * 1000,   group: 'test' },
+  { label: '1 min',  ms: 60 * 1000 },
+  { label: '2 min',  ms: 2 * 60 * 1000 },
+  { label: '5 min',  ms: 5 * 60 * 1000 },
+  { label: '10 min', ms: 10 * 60 * 1000 },
+  { label: '30 min', ms: 30 * 60 * 1000 },
+  { label: '1 hour', ms: 60 * 60 * 1000 },
 ];
 
 const REAL_DURATIONS = [
@@ -22,39 +22,46 @@ const REAL_DURATIONS = [
   { label: '1 year',   ms: 365 * 24 * 60 * 60 * 1000 },
 ];
 
-export const ALL_DURATIONS = [...TEST_DURATIONS, ...REAL_DURATIONS];
-
 export default function DurationPicker({ value, onChange }) {
   return (
     <div className="space-y-4">
-      {/* Test durations */}
+      {/* Standard Commitments */}
       <div>
-        <p className="text-xs font-medium text-vault-muted mb-2 flex items-center gap-2">
-          <span className="px-1.5 py-0.5 rounded text-[10px] bg-amber-500/10 text-amber-400 border border-amber-500/20 font-bold">
-            TEST
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-xs font-medium text-zinc-400">Standard Durations</span>
+          <span className="text-[10px] uppercase font-semibold text-zinc-500 bg-zinc-900 border border-zinc-800 px-1.5 py-0.5 rounded">
+            Recommended
           </span>
-          For testing only
-        </p>
-        <div className="grid grid-cols-3 gap-2">
-          {TEST_DURATIONS.map((d) => (
-            <DurationButton key={d.label} duration={d} selected={value === d.ms} onSelect={onChange} />
+        </div>
+        <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+          {REAL_DURATIONS.map((d) => (
+            <DurationButton
+              key={d.label}
+              duration={d}
+              selected={value === d.ms}
+              onSelect={onChange}
+            />
           ))}
         </div>
       </div>
 
-      <div className="border-t border-vault-border" />
-
-      {/* Real durations */}
-      <div>
-        <p className="text-xs font-medium text-vault-muted mb-2 flex items-center gap-2">
-          <span className="px-1.5 py-0.5 rounded text-[10px] bg-green-500/10 text-green-400 border border-green-500/20 font-bold">
-            REAL
+      {/* Quick Test Durations */}
+      <div className="pt-2 border-t border-zinc-800/60">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-xs font-medium text-zinc-500">Short Duration (Testing)</span>
+          <span className="text-[10px] uppercase font-semibold text-amber-500/70 bg-amber-500/10 border border-amber-500/20 px-1.5 py-0.5 rounded">
+            Test
           </span>
-          Lock durations
-        </p>
-        <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-          {REAL_DURATIONS.map((d) => (
-            <DurationButton key={d.label} duration={d} selected={value === d.ms} onSelect={onChange} />
+        </div>
+        <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+          {TEST_DURATIONS.map((d) => (
+            <DurationButton
+              key={d.label}
+              duration={d}
+              selected={value === d.ms}
+              onSelect={onChange}
+              isTest
+            />
           ))}
         </div>
       </div>
@@ -62,16 +69,18 @@ export default function DurationPicker({ value, onChange }) {
   );
 }
 
-function DurationButton({ duration, selected, onSelect }) {
+function DurationButton({ duration, selected, onSelect, isTest = false }) {
   return (
     <button
       type="button"
       onClick={() => onSelect(duration.ms, duration.label)}
       className={`
-        py-2 px-3 rounded-lg text-sm font-medium transition-all duration-150 border
+        py-2 px-2.5 rounded-xl text-xs font-medium transition-all border text-center
         ${selected
-          ? 'bg-amber-500/20 border-amber-500/60 text-amber-300'
-          : 'bg-vault-surface border-vault-border text-vault-muted hover:border-amber-500/30 hover:text-vault-text'
+          ? 'bg-amber-500 text-zinc-950 font-bold border-amber-400 shadow-sm shadow-amber-500/10'
+          : isTest
+            ? 'bg-zinc-950/60 border-zinc-800/80 text-zinc-400 hover:border-zinc-700 hover:text-zinc-200'
+            : 'bg-zinc-900/80 border-zinc-800 text-zinc-300 hover:border-zinc-700 hover:text-zinc-100'
         }
       `}
     >
