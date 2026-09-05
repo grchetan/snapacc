@@ -76,7 +76,7 @@ export default function HomePage() {
 
       {/* Main Content Layer */}
       <div className="relative z-10 flex flex-col flex-1">
-        <Navbar vaultItems={items} />
+        <Navbar />
 
         <main className="mx-auto max-w-5xl px-4 py-8 flex-1 w-full">
           {/* Error Banner */}

@@ -2,12 +2,12 @@ import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { updatePassword, updateProfile, EmailAuthProvider, reauthenticateWithCredential } from 'firebase/auth';
 import { auth } from '../firebase/config';
-import { X, Shield, KeyRound, User, Download, CheckCircle2, AlertCircle, Eye, EyeOff } from 'lucide-react';
+import { X, Shield, KeyRound, User, CheckCircle2, AlertCircle, Eye, EyeOff } from 'lucide-react';
 
-export default function SettingsModal({ isOpen, onClose, vaultItems = [] }) {
+export default function SettingsModal({ isOpen, onClose }) {
   const { currentUser } = useAuth();
 
-  const [activeTab, setActiveTab] = useState('password'); // 'password' | 'profile' | 'backup'
+  const [activeTab, setActiveTab] = useState('password'); // 'password' | 'profile'
   
   // Password change state
   const [currentPassword, setCurrentPassword] = useState('');
@@ -45,11 +45,9 @@ export default function SettingsModal({ isOpen, onClose, vaultItems = [] }) {
     setPwdSuccess(false);
 
     try {
-      // Re-authenticate user first for security
       const credential = EmailAuthProvider.credential(currentUser.email, currentPassword);
       await reauthenticateWithCredential(auth.currentUser, credential);
 
-      // Update password
       await updatePassword(auth.currentUser, newPassword);
       setPwdSuccess(true);
       setCurrentPassword('');
@@ -89,35 +87,6 @@ export default function SettingsModal({ isOpen, onClose, vaultItems = [] }) {
     }
   };
 
-  // Download encrypted vault backup JSON
-  const handleExportBackup = () => {
-    const backupData = {
-      exportDate: new Date().toISOString(),
-      user: currentUser.email,
-      totalVaults: vaultItems.length,
-      vaults: vaultItems.map(item => ({
-        id: item.id,
-        label: item.label,
-        encPass: item.encPass,
-        ivPass: item.ivPass,
-        saltPass: item.saltPass,
-        unlockTime: item.unlockTime,
-        createdAt: item.createdAt,
-        durationLabel: item.durationLabel,
-      })),
-    };
-
-    const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `timevault-backup-${new Date().toISOString().slice(0, 10)}.json`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  };
-
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-fade-in">
       <div className="w-full max-w-md bg-white/95 rounded-3xl border border-white/80 shadow-[0_15px_45px_rgba(13,71,161,0.18)] backdrop-blur-2xl overflow-hidden relative text-[#0A2558]">
@@ -144,19 +113,19 @@ export default function SettingsModal({ isOpen, onClose, vaultItems = [] }) {
         <div className="flex px-6 pt-4 gap-2 border-b border-blue-100">
           <button
             onClick={() => setActiveTab('password')}
-            className={`pb-2.5 px-2 text-xs font-bold border-b-2 transition-all flex items-center gap-1.5 ${
+            className={`pb-2.5 px-3 text-xs font-bold border-b-2 transition-all flex items-center gap-1.5 ${
               activeTab === 'password'
                 ? 'border-[#1E88E5] text-[#0D47A1]'
                 : 'border-transparent text-[#1E4E8C] hover:text-[#0A2558]'
             }`}
           >
             <KeyRound className="w-3.5 h-3.5" />
-            <span>Password</span>
+            <span>Change Password</span>
           </button>
 
           <button
             onClick={() => setActiveTab('profile')}
-            className={`pb-2.5 px-2 text-xs font-bold border-b-2 transition-all flex items-center gap-1.5 ${
+            className={`pb-2.5 px-3 text-xs font-bold border-b-2 transition-all flex items-center gap-1.5 ${
               activeTab === 'profile'
                 ? 'border-[#1E88E5] text-[#0D47A1]'
                 : 'border-transparent text-[#1E4E8C] hover:text-[#0A2558]'
@@ -164,18 +133,6 @@ export default function SettingsModal({ isOpen, onClose, vaultItems = [] }) {
           >
             <User className="w-3.5 h-3.5" />
             <span>Profile</span>
-          </button>
-
-          <button
-            onClick={() => setActiveTab('backup')}
-            className={`pb-2.5 px-2 text-xs font-bold border-b-2 transition-all flex items-center gap-1.5 ${
-              activeTab === 'backup'
-                ? 'border-[#1E88E5] text-[#0D47A1]'
-                : 'border-transparent text-[#1E4E8C] hover:text-[#0A2558]'
-            }`}
-          >
-            <Download className="w-3.5 h-3.5" />
-            <span>Offline Backup</span>
           </button>
         </div>
 
@@ -324,34 +281,6 @@ export default function SettingsModal({ isOpen, onClose, vaultItems = [] }) {
                 {profLoading ? 'Saving...' : 'Update Name'}
               </button>
             </form>
-          )}
-
-          {/* ── Tab 3: Offline Backup ── */}
-          {activeTab === 'backup' && (
-            <div className="space-y-4">
-              <div className="p-3.5 rounded-2xl bg-[#F0F7FF] border border-blue-100 text-xs text-[#1E4E8C] leading-relaxed">
-                <p className="font-bold text-[#0D47A1] mb-1">Encrypted JSON Snapshot</p>
-                <p>
-                  Download an offline snapshot of your vault cards. Even if you lose internet access, your encrypted hashes and timers remain safe on your device.
-                </p>
-              </div>
-
-              <div className="flex items-center justify-between p-3 rounded-xl bg-white border border-blue-100 text-xs">
-                <span className="font-semibold text-[#0A2558]">Total Active Cards:</span>
-                <span className="font-mono font-bold text-[#0D47A1] bg-[#E3F2FD] px-2.5 py-0.5 rounded-full">
-                  {vaultItems.length}
-                </span>
-              </div>
-
-              <button
-                onClick={handleExportBackup}
-                disabled={vaultItems.length === 0}
-                className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-[#1E88E5] to-[#0D47A1] hover:from-[#2196F3] hover:to-[#1565C0] text-white font-bold text-xs shadow-md shadow-blue-500/20 transition-all disabled:opacity-50"
-              >
-                <Download className="w-4 h-4" />
-                <span>Download Encrypted Backup (.json)</span>
-              </button>
-            </div>
           )}
         </div>
       </div>

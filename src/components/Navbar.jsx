@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { LogOut, Snowflake, Shield, Settings } from 'lucide-react';
 import SettingsModal from './SettingsModal';
 
-export default function Navbar({ vaultItems = [] }) {
+export default function Navbar() {
   const { currentUser, signOut } = useAuth();
   const [showSettings, setShowSettings] = useState(false);
 
@@ -70,7 +70,6 @@ export default function Navbar({ vaultItems = [] }) {
       <SettingsModal
         isOpen={showSettings}
         onClose={() => setShowSettings(false)}
-        vaultItems={vaultItems}
       />
     </>
   );
